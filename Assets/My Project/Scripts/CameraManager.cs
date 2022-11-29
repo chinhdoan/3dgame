@@ -4,16 +4,28 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    public Transform targetPos;
+    private Animator anim;
+    [SerializeField] Transform camPos;
     // Start is called before the first frame update
     void Start()
     {
+        anim = GetComponent<Animator>();
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = targetPos.position;
+        transform.position = camPos.position;
+
+        if (Input.GetMouseButtonDown(1)) {
+            anim.SetBool("aimOrientation", true);
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            anim.SetBool("aimOrientation", false);
+        }
+
+
     }
 }

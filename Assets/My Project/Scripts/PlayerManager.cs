@@ -5,9 +5,8 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     [Header("Movement")]
-        float wsInput;
-        float adInput;
-        float rotateDirection;
+        float wsInput, adInput, mouseX, mouseY, xRotation, yRotation;
+
 
     [Header("Speed")]
         private Animator anim;
@@ -16,6 +15,7 @@ public class PlayerManager : MonoBehaviour
         [SerializeField] private float walkRotateSpeed = 1.5f;
         [SerializeField] private float runRotateSpeed = 3.5f;
         [SerializeField] private float speed = 5f;
+        [SerializeField] GameObject crosshair;
         [SerializeField] Transform orientation;
         private float rotateSpeed;
         private AnimatorStateInfo playerInfo;
@@ -24,22 +24,26 @@ public class PlayerManager : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
- /*       Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.Locked;*/
+        rb.freezeRotation = true;
     }
     private void Update()
     {
+        MyInput();
         MyAnimation();
     }
     private void FixedUpdate()
     {
         MovePlayer();
     }
-    private void MyAnimation() {
-        playerInfo = anim.GetCurrentAnimatorStateInfo(0);
+    void MyInput() {
         wsInput = Input.GetAxis("Vertical");
         adInput = Input.GetAxis("Horizontal");
-        rotateDirection = Input.GetAxis("Mouse X");
+        mouseX = Input.GetAxis("Mouse X");
+        mouseY = Input.GetAxis("Mouse Y");
+    }
+
+    private void MyAnimation() {
+        playerInfo = anim.GetCurrentAnimatorStateInfo(0);
 
         if (playerInfo.IsTag("Still"))
         {
@@ -56,22 +60,18 @@ public class PlayerManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            anim.SetBool("walk",true);
-        }
-       
-        if (Input.GetKeyUp(KeyCode.E)) {
+            anim.SetBool("walk", true);
+        } 
+        else if (Input.GetKeyUp(KeyCode.E)) {
             anim.SetBool("walk", false);
         }
-       
+      
         if (wsInput > 0)
         {
             anim.SetBool("runBack", false);
             anim.SetBool("run", true);
         }
-        if (rotateDirection > 0)
-        {
-            this.transform.Rotate(Vector3.up * rotateSpeed );
-        }
+        
         if (wsInput == 0)
         {
             anim.SetBool("run", false);
@@ -82,14 +82,31 @@ public class PlayerManager : MonoBehaviour
             anim.SetBool("run", false);
             anim.SetBool("runBack", true);
         }
-        if (rotateDirection < 0)
+        if (mouseX > 0)
         {
-            this.transform.Rotate(Vector3.up * -rotateSpeed );
+            this.transform.Rotate(Vector3.up * rotateSpeed);
         }
+        if (mouseX < 0)
+        {
+            this.transform.Rotate(Vector3.up * -rotateSpeed);
+        }
+        yRotation += mouseX;
+
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+
+        
+
+        Debug.Log(mouseY);
+
+       
+       
     }
     private void MovePlayer()
     {
-        Vector3 moveDirection = orientation.forward * wsInput + orientation.right * adInput;
-        rb.AddForce(moveDirection.normalized * speed, ForceMode.Force);
+
+
+  
     }
 }
