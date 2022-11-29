@@ -2,19 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Crosshair : MonoBehaviour
+public class neckfollow : MonoBehaviour
 {
+    [SerializeField] Transform orientation;
     // Start is called before the first frame update
-    [SerializeField] Transform bulletSpawn;
     void Start()
     {
-        Cursor.visible = false;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = Input.mousePosition;
-        //bulletSpawn.position = transform.position;
+        transform.position = orientation.position;
     }
 }

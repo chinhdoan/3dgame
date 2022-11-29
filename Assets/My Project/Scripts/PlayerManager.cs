@@ -5,8 +5,8 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     [Header("Movement")]
-        float wsInput, adInput, mouseX, mouseY, xRotation, yRotation;
-
+        float wsInput, adInput, mouseX, mouseY;
+        Vector3 moveDirection;
 
     [Header("Speed")]
         private Animator anim;
@@ -16,9 +16,11 @@ public class PlayerManager : MonoBehaviour
         [SerializeField] private float runRotateSpeed = 3.5f;
         [SerializeField] private float speed = 5f;
         [SerializeField] GameObject crosshair;
-        [SerializeField] Transform orientation;
+        [SerializeField] Transform bodyRotation, camRotation;
         private float rotateSpeed;
         private AnimatorStateInfo playerInfo;
+
+
         
     private void Start()
     {
@@ -82,31 +84,15 @@ public class PlayerManager : MonoBehaviour
             anim.SetBool("run", false);
             anim.SetBool("runBack", true);
         }
-        if (mouseX > 0)
-        {
-            this.transform.Rotate(Vector3.up * rotateSpeed);
-        }
-        if (mouseX < 0)
-        {
-            this.transform.Rotate(Vector3.up * -rotateSpeed);
-        }
-        yRotation += mouseX;
-
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-
-        
-
-        Debug.Log(mouseY);
-
-       
-       
     }
     private void MovePlayer()
     {
 
+        moveDirection = camRotation.forward * wsInput + camRotation.right * adInput;
 
-  
+        rb.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Impulse);
+
+
     }
+   
 }

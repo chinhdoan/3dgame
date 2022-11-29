@@ -27,13 +27,14 @@ public class PlayerShooting : MonoBehaviour
         
         if (Input.GetMouseButtonDown(0)) {
             Instantiate(gunFlash, muzzleSpawn.position, muzzleSpawn.rotation);
-            GameObject bullet = Instantiate(gunBullet, bulletSpawn.position, muzzleSpawn.rotation);
+            GameObject bullet = Instantiate(gunBullet, bulletSpawn.position, bulletSpawn.rotation);
+            Instantiate(gunBullet, Input.mousePosition, muzzleSpawn.rotation);
             rotateDirection = Input.GetAxis("Mouse X");
             rotateXDirection = Input.GetAxis("Mouse Y");
 
             if (rotateDirection == 0 || rotateDirection < 0 || rotateDirection > 0 )
             {
-                bullet.GetComponent<Rigidbody>().AddForce(bulletSpawn.forward * 10f * -bulletSpeed, ForceMode.Impulse);
+                bullet.GetComponent<Rigidbody>().AddForce(bulletSpawn.forward * 10f * bulletSpeed, ForceMode.Impulse);
             }
            
 
