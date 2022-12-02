@@ -7,11 +7,10 @@ public class PlayerManager : MonoBehaviour
     [Header("Movement")]
     float wsInput, adInput, mouseX, mouseY;
     Vector3 moveDirection;
+    bool isMoving;
 
     [Header("GroundCheck")]
-    [SerializeField] float playerHeihgt;
-    [SerializeField] LayerMask Wall;
-    static bool isGround;
+    bool isGround = false;
     [SerializeField] float groundDrag;
 
 
@@ -23,58 +22,55 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private float walkSeed = 0f;
     [SerializeField] private float speed = 5f;
     [SerializeField] Transform bodyRotation, camRotation;
-    private float rotateSpeed;
+    [HideInInspector] public float rotateSpeed;
     private AnimatorStateInfo playerInfo;
 
     [Header("Jump")]
-    [SerializeField] private float jumpForce = 550f;
+    [SerializeField] private float jumpForce = 250f;
     [SerializeField] private float airForceSpeed = 0.4f;
     [SerializeField] private float jumpTime = 0.25f;
     bool isJumping;
 
-    [Header("Sound")]
-        [SerializeField] AudioClip footStepSound;
-        private AudioSource moveAudio;
+    [Header("FootStep Sound")]
+    [SerializeField] private float baseStepSpeed = 0.5f;
+    [SerializeField] private float crouchStepMultipler = 1.5f;
+    [SerializeField] private float sprintStepMultipler = 0.6f;
+    [SerializeField] private AudioSource footStepAudioSource;
+    [SerializeField] AudioClip[] metalClips;
+    [SerializeField] AudioClip[] woodClips;
+    private float footStepTimer = 0;
+
+    public static PlayerManager instance;
     private void Start()
     {
+        instance = this;
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        //Physics.gravity = new Vector3(0f, -900f, 0f);
+        Physics.gravity = new Vector3(0f, -800f, 0f);
     }
     private void Update()
     {
-
-        isGround = Physics.Raycast(transform.position, Vector3.down, 1+0.001f);
         MyInput();
-        MyAnimation();
+        if (isGround)
+        {
+            rb.drag = groundDrag;
+            Jump();
+        }
+        else
+        {
+            rb.drag = 0;
+            JumpControl();
+        }
         Debug.Log(isGround);
        
     }
     private void FixedUpdate()
     {
+        MyAnimation();
         MovePlayer();
         SpeedControl();
-        if (isGround)
-        {
-            rb.drag = groundDrag;
-           /* if (jumpForce > 0)
-            {
-                jumpForce -= 1500f * Time.deltaTime;
-            }*/
-            Jump();
-            
-        }
-        else
-        {
-            JumpControl();
-            rb.drag = 0;
-            /*if (jumpForce < 0)
-            {
-                jumpForce -= 1000f * Time.deltaTime;
-                //Physics.gravity = new Vector3(0f, -900f, 0f);
-            }   */
-        }
+        
 
     }
     void MyInput() {
@@ -113,9 +109,9 @@ public class PlayerManager : MonoBehaviour
         //only press W
         if (wsInput > 0 && adInput == 0)
         {
-            anim.SetBool("runBack", false);
+            SetAnimationDefault();
             anim.SetBool("run", true);
-
+            
             if (!isGround)
             {
                 anim.SetBool("isJumping", true);
@@ -125,7 +121,7 @@ public class PlayerManager : MonoBehaviour
         //only press S
         if (wsInput < 0 && adInput == 0)
         {
-            anim.SetBool("run", false);
+            SetAnimationDefault();
             anim.SetBool("runBack", true);
  
             if (!isGround)
@@ -150,6 +146,7 @@ public class PlayerManager : MonoBehaviour
         //press WD
         if (wsInput > 0 && adInput > 0)
         {
+            rb.drag = 0;
             SetAnimationDefault();
             anim.SetBool("strafeRight", true);
 
@@ -161,6 +158,7 @@ public class PlayerManager : MonoBehaviour
         //press WA
         if (wsInput > 0 && adInput < 0)
         {
+            rb.drag = 0;
             SetAnimationDefault();
             anim.SetBool("strafeLeft", true);
 
@@ -205,18 +203,29 @@ public class PlayerManager : MonoBehaviour
     {
 
         moveDirection = camRotation.forward * wsInput + camRotation.right * adInput;
+       
         if (isGround)
         {
-            rb.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
-            rb.AddForce(moveDirection.normalized * -(speed / 2) * 10f * (-airForceSpeed / 2), ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * speed * (1 / Time.deltaTime) * 10f, ForceMode.Force);
+            if (wsInput > 0 || wsInput < 0 || adInput > 0 || adInput < 0)
+            {
+                isMoving = true;
+            }
+            else {
+                isMoving = false;
+            }
+            if (isMoving == true)
+            {
+                HandleSound();
+            }
         }
 
         else if (!isGround)
         {
-            airForceSpeed = 1f;
-            rb.AddForce(moveDirection.normalized * speed * 10f * airForceSpeed, ForceMode.Force);
+            rb.AddForce(moveDirection.normalized * speed * 100f * airForceSpeed, ForceMode.Force);
 
-            rb.AddForce(moveDirection.normalized * -(speed / 2) * 10f * (-airForceSpeed / 2), ForceMode.Force);
+            HandleSound();
+            //rb.AddForce(moveDirection.normalized * -(speed / 2) * 10f * (-airForceSpeed / 2), ForceMode.Force);
         }
 
     }
@@ -234,10 +243,12 @@ public class PlayerManager : MonoBehaviour
     private void Jump()
     {
         isJumping = false;
-        if (Input.GetKeyDown(KeyCode.Space) && isJumping) {
-            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        if (Input.GetKeyDown(KeyCode.Space) && isGround && isJumping == false) {
+            //rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             rb.AddForce(transform.up* jumpForce, ForceMode.Impulse);
             isJumping = true;
+            Debug.Log("jumping");
+            isGround = false;
         }  
     }
 
@@ -254,18 +265,25 @@ public class PlayerManager : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Wall")
+        if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Box")
         {
             isGround = true;
+            Debug.Log("landing");
         }
     }
-    /*IEnumerator  waitSound() {
-        moveAudio = GetComponent<AudioSource>();
-        moveAudio.clip = footStepSound;
-        moveAudio.Play();
-        yield return new WaitForSeconds(3f);
-        moveAudio.Stop();
-        yield return new WaitForSeconds(1f);
-
-    }*/
+    void HandleSound()
+    {
+        if (!isGround) return;
+        footStepTimer -= Time.deltaTime;
+        if (footStepTimer <= 0) {
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 3)) {
+                switch(hit.collider.tag){
+                    case "Ground":
+                        footStepAudioSource.PlayOneShot(metalClips[Random.Range(0,metalClips.Length-1)]);
+                        break;
+                }
+            }
+            footStepTimer = baseStepSpeed * 0.6f;
+        }
+    }
 }

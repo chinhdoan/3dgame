@@ -10,28 +10,35 @@ public class CameraManager : MonoBehaviour
 
 
     [Header("Movement")]
-        float wsInput, adInput, mouseX, mouseY, xRotation, yRotation;
-        float xAngle = 0;
-        [SerializeField] float senX,senY;
+    float wsInput, adInput, mouseX, mouseY, xRotation, yRotation;
+    float smoothCamRotateSpeed ;
+    [SerializeField] float senX,senY;
+
+
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        mouseX = Input.GetAxis("Mouse X") * Time.deltaTime * senX;
-        mouseY = Input.GetAxis("Mouse Y") * Time.deltaTime * senY;
+
+
+        mouseX = Input.GetAxis("Mouse X") * senX * (1 / Time.deltaTime) * PlayerManager.instance.rotateSpeed;
+        mouseY = Input.GetAxis("Mouse Y") * senY * (1 / Time.deltaTime) * PlayerManager.instance.rotateSpeed;
 
         yRotation += mouseX;
 
         xRotation -= mouseY;
+
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+        
 
 
         if (Input.GetMouseButtonDown(1))
@@ -42,14 +49,14 @@ public class CameraManager : MonoBehaviour
         {
             anim.SetBool("aimOrientation", false);
         }
-
+       
     }
     private void FixedUpdate()
     {
-
+        playerRotation.rotation = Quaternion.Euler(0, yRotation, 0);
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         bodyRotation.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        playerRotation.rotation = Quaternion.Euler(0, yRotation, 0);
+       
         
     }
 }

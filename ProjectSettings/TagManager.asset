@@ -7,6 +7,8 @@ TagManager:
   - Shootable
   - Wall
   - Bullet
+  - Ground
+  - Box
   layers:
   - Default
   - TransparentFX
