@@ -33,9 +33,7 @@ public class CameraManager : MonoBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        bodyRotation.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        playerRotation.rotation = Quaternion.Euler(0, yRotation, 0);
+
         if (Input.GetMouseButtonDown(1))
         {
             anim.SetBool("aimOrientation", true);
@@ -45,6 +43,13 @@ public class CameraManager : MonoBehaviour
             anim.SetBool("aimOrientation", false);
         }
 
+    }
+    private void FixedUpdate()
+    {
 
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        bodyRotation.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        playerRotation.rotation = Quaternion.Euler(0, yRotation, 0);
+        
     }
 }

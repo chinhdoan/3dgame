@@ -36,12 +36,9 @@ public class PlayerShooting : MonoBehaviour
             {
                 bullet.GetComponent<Rigidbody>().AddForce(bulletSpawn.forward * 10f * bulletSpeed, ForceMode.Impulse);
             }
-           
-
+            Hits();
             playerAudio.clip = singleShootSound;
             playerAudio.Play();
-
-            Hits();
         }
     }
 

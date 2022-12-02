@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: a8f603265148af94e89a461de914fbf9
+guid: cc33a608cf11db64fbd824480d194367
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable:
   - first:
       74: -203655887218126122
+    second: Rifle Run (8)
+  - first:
+      74: -1225430849258194476
     second: Rifle Run
   externalObjects: {}
   materials:
@@ -40,9 +43,9 @@ ModelImporter:
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 20
+      lastFrame: 39
       wrapMode: 0
-      orientationOffsetY: 0
+      orientationOffsetY: -20
       level: 0
       cycleOffset: 0
       loop: 0
