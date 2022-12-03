@@ -17,17 +17,17 @@ public class PlayerManager : MonoBehaviour
     [Header("Speed")]
     private Animator anim;
     private Rigidbody rb;
-    [SerializeField] private float stillRotateSpeed = 0.5f;
-    [SerializeField] private float runRotateSpeed = 3.5f;
-    [SerializeField] private float walkSeed = 0f;
-    [SerializeField] private float speed = 5f;
+    [SerializeField] private float stillRotateSpeed = 2.5f;
+    [SerializeField] private float runRotateSpeed = 4f;
+    [SerializeField] private float walkSeed = 10f;
+    [SerializeField] private float speed = 20f;
     [SerializeField] Transform bodyRotation, camRotation;
     [HideInInspector] public float rotateSpeed;
     private AnimatorStateInfo playerInfo;
 
     [Header("Jump")]
-    [SerializeField] private float jumpForce = 250f;
-    [SerializeField] private float airForceSpeed = 0.4f;
+    [SerializeField] private float jumpForce = 300f;
+    [SerializeField] private float airForceSpeed = 7f;
     [SerializeField] private float jumpTime = 0.25f;
     bool isJumping;
 
@@ -52,22 +52,25 @@ public class PlayerManager : MonoBehaviour
     private void Update()
     {
         MyInput();
-        if (isGround)
-        {
-            rb.drag = groundDrag;
-            Jump();
-        }
-        else
-        {
-            rb.drag = 0;
-            JumpControl();
-        }
+        MyAnimation();
         Debug.Log(isGround);
        
     }
     private void FixedUpdate()
     {
-        MyAnimation();
+        ///MyAnimation();
+        if (isGround)
+        {
+            rb.drag = groundDrag;
+            anim.enabled = true;
+            Jump();
+        }
+        else
+        {
+            rb.drag = 0;
+            Physics.gravity = new Vector3(0f, -900f, 0f);
+            JumpControl();
+        }
         MovePlayer();
         SpeedControl();
         
@@ -111,44 +114,61 @@ public class PlayerManager : MonoBehaviour
         {
             SetAnimationDefault();
             anim.SetBool("run", true);
-            
+
+            setBhopgAnimation();
+
             if (!isGround)
             {
                 anim.SetBool("isJumping", true);
             }
-
         }
         //only press S
         if (wsInput < 0 && adInput == 0)
         {
             SetAnimationDefault();
             anim.SetBool("runBack", true);
- 
+
+            setBhopgAnimation();
+
             if (!isGround)
             {
                 anim.SetBool("jumpBack", true);
             }
         }
         //only press D
-        if (adInput > 0)
+        if (adInput > 0 && wsInput == 0)
         {
             SetAnimationDefault();
             anim.SetBool("runRight", true);
- 
+
+            setBhopgAnimation();
+
+            if (!isGround)
+            {
+                anim.SetBool("jumpRight", true);
+            }
 
         }
         //only press A
-        if (adInput < 0)
+        if (adInput < 0 && wsInput == 0)
         {
             SetAnimationDefault();
             anim.SetBool("runLeft", true);
+
+            setBhopgAnimation();
+
+            if (!isGround)
+            {
+                anim.SetBool("jumpLeft", true);
+            }
         }
         //press WD
         if (wsInput > 0 && adInput > 0)
         {
-            rb.drag = 0;
             SetAnimationDefault();
             anim.SetBool("strafeRight", true);
+
+            setBhopgAnimation();
 
             if (!isGround)
             {
@@ -158,9 +178,10 @@ public class PlayerManager : MonoBehaviour
         //press WA
         if (wsInput > 0 && adInput < 0)
         {
-            rb.drag = 0;
             SetAnimationDefault();
             anim.SetBool("strafeLeft", true);
+
+            setBhopgAnimation();
 
             if (!isGround)
             {
@@ -173,31 +194,49 @@ public class PlayerManager : MonoBehaviour
         if (wsInput < 0 && adInput < 0)
         {
             SetAnimationDefault();
-            anim.SetBool("strafeBackLeft", true);
+            anim.SetBool("strafeBackRight", true);
 
+            setBhopgAnimation();
+
+            if (!isGround)
+            {
+                anim.SetBool("jumpStrafeBackRight", true);
+            }
         }
         //press SA
         if (wsInput < 0 && adInput > 0)
         {
             SetAnimationDefault();
-            anim.SetBool("strafeBackRight", true);
+            anim.SetBool("strafeBackLeft", true);
 
+            setBhopgAnimation();
+
+            if (!isGround)
+            {
+                anim.SetBool("jumpStrafeBackLeft", true);
+            }
         }
     }
    
     private void SetAnimationDefault() {
         anim.SetBool("run", false);
-        anim.SetBool("runBack", false);
-        anim.SetBool("runRight", false);
-        anim.SetBool("runLeft", false);
-        anim.SetBool("strafeRight", false);
-        anim.SetBool("strafeLeft", false);
-        anim.SetBool("strafeBackLeft", false);
-        anim.SetBool("strafeBackRight", false);
         anim.SetBool("isJumping", false);
+        anim.SetBool("runBack", false);
         anim.SetBool("jumpBack", false);
+        anim.SetBool("runRight", false);
+        anim.SetBool("jumpRight", false);
         anim.SetBool("jumpStrafeRight", false);
+        anim.SetBool("runLeft", false);
+        anim.SetBool("jumpLeft", false);
         anim.SetBool("jumpStrafeLeft", false);
+        anim.SetBool("strafeRight", false);
+        anim.SetBool("jumpStrafeRight", false);
+        anim.SetBool("strafeLeft", false);
+        anim.SetBool("jumpStrafeLeft", false);
+        anim.SetBool("strafeBackLeft", false);
+        anim.SetBool("jumpStrafeBackLeft", false);
+        anim.SetBool("strafeBackRight", false);
+        anim.SetBool("jumpStrafeBackRight", false);
     }
     private void MovePlayer()
     {
@@ -242,14 +281,29 @@ public class PlayerManager : MonoBehaviour
 
     private void Jump()
     {
-        isJumping = false;
-        if (Input.GetKeyDown(KeyCode.Space) && isGround && isJumping == false) {
-            //rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-            rb.AddForce(transform.up* jumpForce, ForceMode.Impulse);
+        if (Input.GetKey(KeyCode.Space) && isGround && isJumping == false) {
             isJumping = true;
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            rb.AddForce(transform.up* jumpForce, ForceMode.Impulse);
+
+            //isJumping = true;
+            Invoke("setJumping", 0.5f);
             Debug.Log("jumping");
             isGround = false;
         }  
+    }
+    void setJumping() {
+        //Set Bhop Animation
+        SetAnimationDefault();
+        anim.enabled = false;
+        //Set Jumping
+        isJumping = false;
+    }
+    void setBhopgAnimation() {
+        if (!isGround && Input.GetKey(KeyCode.Space))
+        {
+            SetAnimationDefault();
+        }
     }
 
     private void JumpControl()
