@@ -19,7 +19,7 @@ public class PlayerShooting : MonoBehaviour
     [Header("Shooting")]
     float delayTime = 0f;
     bool isShooting, isSpraying;
-    float baseShootingTime = 999f;
+    float baseShootingTime = 5f;
 
 
     // Start is called before the first frame update
@@ -57,7 +57,7 @@ public class PlayerShooting : MonoBehaviour
             {
                 shoot();
             }
-            delayTime = baseShootingTime * 1000f;
+            delayTime = baseShootingTime;
         }
     }
 

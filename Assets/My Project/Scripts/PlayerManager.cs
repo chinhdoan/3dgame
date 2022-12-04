@@ -24,12 +24,17 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] Transform bodyRotation, camRotation;
     [HideInInspector] public float rotateSpeed;
     private AnimatorStateInfo playerInfo;
+    [SerializeField] private float forceSpeed = 0.5f;
+    float forceTime = 3f;
+    [SerializeField] private float baseForceTimer = 0.5f;
 
     [Header("Jump")]
     [SerializeField] private float jumpForce = 300f;
     [SerializeField] private float airForceSpeed = 7f;
     [SerializeField] private float jumpTime = 0.25f;
     bool isJumping;
+    int countJump = 0;
+    int tempCount;
 
     [Header("FootStep Sound")]
     [SerializeField] private float baseStepSpeed = 0.5f;
@@ -52,29 +57,48 @@ public class PlayerManager : MonoBehaviour
     private void Update()
     {
         MyInput();
-        MyAnimation();
-        Debug.Log(isGround);
-       
-    }
-    private void FixedUpdate()
-    {
-        ///MyAnimation();
         if (isGround)
         {
             rb.drag = groundDrag;
             anim.enabled = true;
-            Jump();
         }
         else
         {
             rb.drag = 0;
-            Physics.gravity = new Vector3(0f, -900f, 0f);
-            JumpControl();
+            Physics.gravity = new Vector3(0f, -800f, 0f);
         }
+    }
+    private void FixedUpdate()
+    {
         MovePlayer();
-        SpeedControl();
-        
 
+        //SetBhopJumpForce
+        if (Input.GetKeyDown(KeyCode.Space) && isGround && isJumping == false)
+        {
+            if (isGround == false)
+            {
+                isGround = true;
+                jumpForce = 300f;
+                Jump(jumpForce);
+                //JumpControl();          
+            }
+            if (isGround == true)
+            {
+                jumpForce = 300f;
+                Jump(jumpForce);
+                //JumpControl();
+            }
+        }
+
+        //SetBhopJumpForce
+        if (Input.GetKey(KeyCode.Space) && isGround && isJumping == false)
+        {
+            jumpForce = 280f;
+            Jump(jumpForce);
+        }
+        
+        
+        MyAnimation();
     }
     void MyInput() {
         wsInput = Input.GetAxis("Vertical");
@@ -121,6 +145,8 @@ public class PlayerManager : MonoBehaviour
             {
                 anim.SetBool("isJumping", true);
             }
+
+            setBhopgAnimation();
         }
         //only press S
         if (wsInput < 0 && adInput == 0)
@@ -134,6 +160,10 @@ public class PlayerManager : MonoBehaviour
             {
                 anim.SetBool("jumpBack", true);
             }
+            //fix 
+            setBhopgAnimation();
+
+
         }
         //only press D
         if (adInput > 0 && wsInput == 0)
@@ -147,7 +177,8 @@ public class PlayerManager : MonoBehaviour
             {
                 anim.SetBool("jumpRight", true);
             }
-
+            //fix 
+            setBhopgAnimation();
         }
         //only press A
         if (adInput < 0 && wsInput == 0)
@@ -161,6 +192,9 @@ public class PlayerManager : MonoBehaviour
             {
                 anim.SetBool("jumpLeft", true);
             }
+
+            //fix 
+            setBhopgAnimation();
         }
         //press WD
         if (wsInput > 0 && adInput > 0)
@@ -174,6 +208,9 @@ public class PlayerManager : MonoBehaviour
             {
                 anim.SetBool("jumpStrafeRight", true);
             }
+
+            //fix 
+            setBhopgAnimation();
         }
         //press WA
         if (wsInput > 0 && adInput < 0)
@@ -188,9 +225,11 @@ public class PlayerManager : MonoBehaviour
                 anim.SetBool("jumpStrafeLeft", true);
             }
 
+            //fix 
+            setBhopgAnimation();
 
         }
-        //press SD
+        //press SA
         if (wsInput < 0 && adInput < 0)
         {
             SetAnimationDefault();
@@ -202,8 +241,11 @@ public class PlayerManager : MonoBehaviour
             {
                 anim.SetBool("jumpStrafeBackRight", true);
             }
+
+            //fix 
+            setBhopgAnimation();
         }
-        //press SA
+        //press SD
         if (wsInput < 0 && adInput > 0)
         {
             SetAnimationDefault();
@@ -215,6 +257,9 @@ public class PlayerManager : MonoBehaviour
             {
                 anim.SetBool("jumpStrafeBackLeft", true);
             }
+
+            //fix 
+            setBhopgAnimation();
         }
     }
    
@@ -245,6 +290,10 @@ public class PlayerManager : MonoBehaviour
        
         if (isGround)
         {
+            forceTime -= Time.deltaTime;
+            if (forceTime <= 0) {
+                rb.AddForce(moveDirection.normalized * speed * (1 / Time.deltaTime) * forceSpeed * 10f, ForceMode.Force);
+            }
             rb.AddForce(moveDirection.normalized * speed * (1 / Time.deltaTime) * 10f, ForceMode.Force);
             if (wsInput > 0 || wsInput < 0 || adInput > 0 || adInput < 0)
             {
@@ -266,6 +315,11 @@ public class PlayerManager : MonoBehaviour
             HandleSound();
             //rb.AddForce(moveDirection.normalized * -(speed / 2) * 10f * (-airForceSpeed / 2), ForceMode.Force);
         }
+        if ((wsInput == 0 && adInput == 0) || Input.GetKeyDown(KeyCode.Space))
+        {
+            forceTime = baseForceTimer;
+        }
+        SpeedControl();
 
     }
 
@@ -279,22 +333,24 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    private void Jump()
+    private void Jump(float force)
     {
-        if (Input.GetKey(KeyCode.Space) && isGround && isJumping == false) {
-            isJumping = true;
-            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-            rb.AddForce(transform.up* jumpForce, ForceMode.Impulse);
+        isJumping = true;
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddForce(transform.up * force    , ForceMode.Impulse);
+        Physics.gravity = new Vector3(0f, -300f, 0f);
+        //isJumping = true;
+        Invoke("setJumping", 0.01f);
+        
+        isGround = false;
 
-            //isJumping = true;
-            Invoke("setJumping", 0.5f);
-            Debug.Log("jumping");
-            isGround = false;
-        }  
+        
     }
     void setJumping() {
+        countJump++;
         //Set Bhop Animation
         SetAnimationDefault();
+        Physics.gravity = new Vector3(0f, -800f, 0f);
         anim.enabled = false;
         //Set Jumping
         isJumping = false;
@@ -306,22 +362,12 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    private void JumpControl()
-    {
-        Vector3 jumpVel = new Vector3(0f, rb.velocity.y, 0f);
-
-        if (jumpVel.magnitude > jumpForce)
-        {
-            Vector3 limitVel = jumpVel.normalized * jumpForce;
-            rb.velocity = new Vector3(rb.velocity.x, limitVel.y, rb.velocity.z);
-        }
-    }
-
     public void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Box")
         {
             isGround = true;
+            countJump = 0;
             Debug.Log("landing");
         }
     }
