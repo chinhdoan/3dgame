@@ -55,12 +55,11 @@ public class CameraManager : MonoBehaviour
 
 
         }
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        bodyRotation.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);   
     }
     private void FixedUpdate()
     {
         playerRotation.rotation = Quaternion.Euler(0, yRotation, 0);
+        bodyRotation.rotation = Quaternion.Euler(xRotation, yRotation, 0);
     }
 }
