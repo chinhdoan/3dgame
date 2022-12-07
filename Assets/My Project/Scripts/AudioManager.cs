@@ -49,4 +49,11 @@ public class AudioManager : MonoBehaviour
 		Sound s = Array.Find(sounds, item => item.name == sound);
 		s.source.Stop();
 	}
+	public void PlayOnce(string sound)
+	{
+		Sound s = Array.Find(sounds, item => item.name == sound);
+		s.source.PlayOneShot(s.clip);
+
+
+	}
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
+    [Header("View")]
     private Animator anim;
     [SerializeField] Transform bodyRotation, camPos, playerRotation;
     [SerializeField] Vector3 offset;
@@ -14,7 +15,8 @@ public class CameraManager : MonoBehaviour
     float smoothCamRotateSpeed ;
     [SerializeField] float senX,senY;
 
-
+    [Header("ThirdPerson")]
+    [SerializeField] GameObject crosshair;
     // Start is called before the first frame update
     void Start()
     {
@@ -44,10 +46,14 @@ public class CameraManager : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             anim.SetBool("aimOrientation", true);
+            crosshair.SetActive(false);
         }
         if (Input.GetMouseButtonUp(1))
         {
             anim.SetBool("aimOrientation", false);
+            crosshair.SetActive(true);
+
+
         }
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         bodyRotation.rotation = Quaternion.Euler(xRotation, yRotation, 0);

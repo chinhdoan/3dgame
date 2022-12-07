@@ -17,9 +17,8 @@ public class PlayerShooting : MonoBehaviour
     RaycastHit hit;
 
     [Header("Shooting")]
-    float delayTime = 0f;
-    bool isShooting, isSpraying;
-    float baseShootingTime = 5f;
+    float delayTime = 0.5f;
+    float baseAKDeplayTime= 0.1f;
 
 
     // Start is called before the first frame update
@@ -33,37 +32,23 @@ public class PlayerShooting : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            isShooting = true;
+            shoot();
+            AudioManager.instance.Play("gunShootSound");
+            delayTime = 0.25f;
         }
         if (Input.GetMouseButton(0))
-        {
-            isSpraying = true;
-
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            isSpraying = false;
-            isShooting = false;
-        }
-        if (isShooting)
-        {
-            shoot();
-        }
-        if (isSpraying && !isShooting)
         {
             delayTime -= Time.deltaTime;
             Debug.Log(delayTime);
             if (delayTime <= 0)
             {
                 shoot();
+                AudioManager.instance.PlayOnce("gunShootSound");
+                delayTime = baseAKDeplayTime;
             }
-            delayTime = baseShootingTime;
         }
     }
 
-    void MuzzleSpawn() {
-        Instantiate(gunFlash, muzzleSpawn.position, muzzleSpawn.rotation);
-    }
     void shoot() {
         Instantiate(gunFlash, muzzleSpawn.position, muzzleSpawn.rotation);
         GameObject bullet = Instantiate(gunBullet, bulletSpawn.position, bulletSpawn.rotation);
@@ -77,11 +62,6 @@ public class PlayerShooting : MonoBehaviour
         Hits();
         /*      playerAudio.clip = singleShootSound;
               playerAudio.Play();*/
-        AudioManager.instance.Play("gunShootSound");
-
-
-        isShooting = true;
-
     }
 
     public void Hits() {
