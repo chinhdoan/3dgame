@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class neckfollow : MonoBehaviour
+public class FixMainCameraPos : MonoBehaviour
 {
-    [SerializeField] Transform orientation;
+    [SerializeField] Transform camRotationPos;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,6 +14,6 @@ public class neckfollow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = orientation.position;
+        transform.position = camRotationPos.position;
     }
 }

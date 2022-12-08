@@ -15,5 +15,6 @@ public class Crosshair : MonoBehaviour
     void Update()
     {
         transform.position = Input.mousePosition;
+        transform.rotation = Quaternion.Euler(0,0,0); //Fix Crosshair Rotaion
     }
 }

@@ -21,7 +21,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private float runRotateSpeed = 4f;
     [SerializeField] private float walkSeed = 10f;
     [SerializeField] private float speed = 20f;
-    [SerializeField] Transform bodyRotation, camRotation;
+    [SerializeField] Transform camRotation, mainCameraRotation;
     [HideInInspector] public float rotateSpeed;
     private AnimatorStateInfo playerInfo;
     [SerializeField] private float forceSpeed = 0.5f;
@@ -65,8 +65,8 @@ public class PlayerManager : MonoBehaviour
     }
     private void Update()
     {
-        MyInput();
         MyAnimation();
+        MyInput();
         if (isGround)
         {
             rb.drag = groundDrag;
@@ -78,11 +78,10 @@ public class PlayerManager : MonoBehaviour
         {
             rb.drag = 1;
         }
+       
     }
     private void FixedUpdate()
     {
-        MovePlayer(); 
-        
         //Set Jump Once
         if (Input.GetKeyDown(KeyCode.Space) && isGround && isJumping == false)
         {
@@ -93,7 +92,7 @@ public class PlayerManager : MonoBehaviour
             {
                 isGround = true;
                 jumpForce = 250f;
-                Jump(jumpForce);    
+                Jump(jumpForce);
             }
             //Single Jump
             if (isGround == true)
@@ -109,6 +108,8 @@ public class PlayerManager : MonoBehaviour
             bunnyForce = 350f;
             Jump(bunnyForce);
         }
+        MovePlayer();
+        this.transform.rotation = Quaternion.Euler(0, mainCameraRotation.eulerAngles.y,0);
     }
 
     void MyInput() {

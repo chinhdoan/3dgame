@@ -6,7 +6,7 @@ public class CameraManager : MonoBehaviour
 {
     [Header("View")]
     private Animator anim;
-    [SerializeField] Transform bodyRotation, camPos, playerRotation;
+    [SerializeField] Transform bodyRotation, camPos, playerRotation, playerHand;
     [SerializeField] Vector3 offset;
 
 
@@ -22,7 +22,7 @@ public class CameraManager : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        Cursor.visible = true;
        
     }
 
@@ -39,7 +39,6 @@ public class CameraManager : MonoBehaviour
         xRotation -= mouseY;
 
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
         
 
 
@@ -52,14 +51,13 @@ public class CameraManager : MonoBehaviour
         {
             anim.SetBool("aimOrientation", false);
             crosshair.SetActive(true);
-
-
         }
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);   
     }
     private void FixedUpdate()
     {
-        playerRotation.rotation = Quaternion.Euler(0, yRotation, 0);
-        bodyRotation.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        //playerRotation.rotation = Quaternion.Euler(0, yRotation, 0);
+        playerHand.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        this.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        
     }
 }
