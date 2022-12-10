@@ -15,7 +15,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] float senX,senY;
 
     [Header("ThirdPerson")]
-    [SerializeField] GameObject crosshair;
+    //[SerializeField] GameObject crosshair;
     [SerializeField] GameObject mainPlayer,handWeaponLocal;
     // Start is called before the first frame update
     void Start()
@@ -48,14 +48,14 @@ public class CameraManager : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             anim.SetBool("aimOrientation", true);
-            crosshair.SetActive(false);
+            //crosshair.SetActive(false);
             mainPlayer.SetActive(true);
             handWeaponLocal.SetActive(false);
         }
         if (Input.GetMouseButtonUp(1))
         {
             anim.SetBool("aimOrientation", false);
-            crosshair.SetActive(true);
+            //crosshair.SetActive(true);
             mainPlayer.SetActive(false);
             handWeaponLocal.SetActive(true);
 

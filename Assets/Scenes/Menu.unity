@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 45342404}
   - component: {fileID: 45342403}
   m_Layer: 5
-  m_Name: ButtonDiv
+  m_Name: ButtonPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -562,6 +562,7 @@ GameObject:
   - component: {fileID: 338891061}
   - component: {fileID: 338891060}
   - component: {fileID: 338891059}
+  - component: {fileID: 338891062}
   m_Layer: 5
   m_Name: PreBtn
   m_TagString: Untagged
@@ -633,7 +634,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 338891060}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 338891062}
+        m_TargetAssemblyTypeName: MapSelection, Assembly-CSharp
+        m_MethodName: prevSelection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &338891060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -672,6 +685,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 338891057}
   m_CullTransparentMesh: 1
+--- !u!114 &338891062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 338891057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de52967e986611d4f8baffbe5cee4079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skins: []
+  charSelected: 0
+  numCoins: {fileID: 0}
+  status: {fileID: 0}
 --- !u!1 &387116496
 GameObject:
   m_ObjectHideFlags: 0
@@ -830,7 +859,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 12.484009, y: -255.831}
+  m_AnchoredPosition: {x: 0, y: -143}
   m_SizeDelta: {x: 972.222, y: 763.63}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &731615463
@@ -845,7 +874,7 @@ GameObject:
   - component: {fileID: 731615466}
   - component: {fileID: 731615465}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: TitlePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1069,6 +1098,7 @@ GameObject:
   - component: {fileID: 815872201}
   - component: {fileID: 815872200}
   - component: {fileID: 815872199}
+  - component: {fileID: 815872202}
   m_Layer: 5
   m_Name: NextBtn
   m_TagString: Untagged
@@ -1140,7 +1170,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 815872200}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 815872202}
+        m_TargetAssemblyTypeName: MapSelection, Assembly-CSharp
+        m_MethodName: nextSelection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &815872200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1179,6 +1221,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 815872197}
   m_CullTransparentMesh: 1
+--- !u!114 &815872202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815872197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de52967e986611d4f8baffbe5cee4079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skins: []
+  charSelected: 0
+  numCoins: {fileID: 0}
+  status: {fileID: 0}
 --- !u!1 &837640378
 GameObject:
   m_ObjectHideFlags: 0
@@ -1717,7 +1775,7 @@ GameObject:
   - component: {fileID: 1163887906}
   - component: {fileID: 1163887905}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: MapPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
