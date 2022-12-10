@@ -7,7 +7,7 @@ public class PlayerManager : MonoBehaviour
     [Header("Movement")]
     float wsInput, adInput, mouseX, mouseY;
     Vector3 moveDirection;
-    bool isMoving;
+    public bool isMoving;
 
     [Header("GroundCheck")]
     [HideInInspector] public bool isGround = false;
@@ -21,12 +21,12 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private float runRotateSpeed = 4f;
     [SerializeField] private float walkSeed = 10f;
     [SerializeField] private float speed = 20f;
-    [SerializeField] Transform camRotation, mainCameraRotation;
+    [SerializeField] Transform orientaion, mainCameraRotation;
     [HideInInspector] public float rotateSpeed;
     private AnimatorStateInfo playerInfo;
     [SerializeField] private float forceSpeed = 0.5f;
-    float forceTime = 3f;
-    [SerializeField] private float baseForceTimer = 0.5f;
+    float forceTime = 0.5f;
+    [SerializeField] private float baseForceTimer = 0.1f;
 
     [Header("Jump")]
     [SerializeField] private float jumpForce = 300f;
@@ -56,7 +56,17 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance == this)
+        {
+            Destroy(instance);
+        }
+        else {
+            DontDestroyOnLoad(this);
+        }
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
@@ -65,8 +75,9 @@ public class PlayerManager : MonoBehaviour
     }
     private void Update()
     {
-        MyAnimation();
+
         MyInput();
+
         if (isGround)
         {
             rb.drag = groundDrag;
@@ -79,9 +90,12 @@ public class PlayerManager : MonoBehaviour
             rb.drag = 1;
         }
        
+       
     }
+
     private void FixedUpdate()
     {
+       
         //Set Jump Once
         if (Input.GetKeyDown(KeyCode.Space) && isGround && isJumping == false)
         {
@@ -97,7 +111,7 @@ public class PlayerManager : MonoBehaviour
             //Single Jump
             if (isGround == true)
             {
-                jumpForce = 310f;
+                jumpForce = 300f;
                 Jump(jumpForce);
             }
         }
@@ -109,17 +123,17 @@ public class PlayerManager : MonoBehaviour
             Jump(bunnyForce);
         }
         MovePlayer();
-        this.transform.rotation = Quaternion.Euler(0, mainCameraRotation.eulerAngles.y,0);
+        MyAnimation();
     }
 
-    void MyInput() {
+    public void MyInput() {
         wsInput = Input.GetAxis("Vertical");
         adInput = Input.GetAxis("Horizontal");
         mouseX = Input.GetAxis("Mouse X");
         mouseY = Input.GetAxis("Mouse Y");
     }
 
-    private void MyAnimation() {
+    public void MyAnimation() {
         anim.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("FixBhopAnimation/PlayerController");
         playerInfo = anim.GetCurrentAnimatorStateInfo(0);
 
@@ -144,7 +158,6 @@ public class PlayerManager : MonoBehaviour
         if (wsInput == 0 || adInput == 0)
         {
             SetAnimationDefault();
-            
         }
         //only press W
         if (wsInput > 0 && adInput == 0)
@@ -263,8 +276,8 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
-   
-    private void SetAnimationDefault() {
+
+    public void SetAnimationDefault() {
         anim.SetBool("run", false);
         anim.SetBool("isJumping", false);
         anim.SetBool("runBack", false);
@@ -284,17 +297,17 @@ public class PlayerManager : MonoBehaviour
         anim.SetBool("strafeBackRight", false);
         anim.SetBool("jumpStrafeBackRight", false);
     }
-    private void MovePlayer()
+    public void MovePlayer()
     {
-
-        moveDirection = camRotation.forward * wsInput + camRotation.right * adInput;
+        //Player Movement
+        moveDirection = orientaion.forward * wsInput + orientaion.right * adInput;
         if (isGround)
         {
+            rb.AddForce(moveDirection.normalized * speed * (1 / Time.deltaTime) * 10f, ForceMode.Force);
             forceTime -= Time.deltaTime;
             if (forceTime <= 0) {
-                rb.AddForce(moveDirection.normalized * speed * (1 / Time.deltaTime) * forceSpeed * 10f, ForceMode.Force);
+                rb.AddForce(moveDirection.normalized * speed * forceSpeed * 10f, ForceMode.Force);
             }
-            rb.AddForce(moveDirection.normalized * speed * (1 / Time.deltaTime) * 10f, ForceMode.Force);
             if (wsInput > 0 || wsInput < 0 || adInput > 0 || adInput < 0)
             {
                 isMoving = true;
@@ -322,32 +335,63 @@ public class PlayerManager : MonoBehaviour
             if (wsInput > 0 || adInput > 0 || adInput < 0) {
                 airForceSpeed = 14.25f;
             }
+            //Set Jump Distance Max
             rb.AddForce(moveDirection.normalized * speed * 100f * airForceSpeed, ForceMode.Force);
             HandleSound();
         }
-        if ((wsInput == 0 && adInput == 0) || Input.GetKeyDown(KeyCode.Space))
-        {
+        if (wsInput == 0 && adInput == 0 || Input.GetKeyDown(KeyCode.Space)){
             forceTime = baseForceTimer;
         }
-        SpeedControl();
 
+       
+        SpeedControl();
     }
 
-    private void SpeedControl() {
-        Vector3 flatVel = new Vector3(rb.velocity.x,0f, rb.velocity.z);
-        
+    public void SpeedControl() {
+        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
         if (flatVel.magnitude > speed)
         {
             Vector3 limitVel = flatVel.normalized * speed;
-            rb.velocity = new Vector3(limitVel.x,rb.velocity.y,limitVel.z);
+            rb.velocity = new Vector3(limitVel.x, rb.velocity.y, limitVel.z);
         }
     }
 
-    private void Jump(float force)
+    public void JumpPlayer()
+    {
+         //Set Jump Once
+        if (Input.GetKeyDown(KeyCode.Space) && isGround && isJumping == false)
+        {
+            bhopTimer = 1.5f;
+
+            //Double Jump
+            if (isGround == false)
+            {
+                isGround = true;
+                jumpForce = 250f;
+                Jump(jumpForce);
+            }
+            //Single Jump
+            if (isGround == true)
+            {
+                jumpForce = 300f;
+                Jump(jumpForce);
+            }
+        }
+
+        //SetBhopJumpForce
+        if (Input.GetKey(KeyCode.Space) && isGround && isJumping == false)
+        {
+            bunnyForce = 350f;
+            Jump(bunnyForce);
+        }
+    }
+
+    public void Jump(float force)
     {
         isJumping = true;
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        rb.AddForce(transform.up * force    , ForceMode.Impulse);
+        rb.AddForce(transform.up * force , ForceMode.Impulse);
         Physics.gravity = new Vector3(0f, -10f, 0f);
         //isJumping = true;
         Invoke("setJumping", 0.01f);
@@ -355,7 +399,7 @@ public class PlayerManager : MonoBehaviour
 
         
     }
-    void setJumping() {
+    public void setJumping() {
         countJump++;
         Physics.gravity = new Vector3(0f, -850f, 0f);
         isJumping = false; //Set Jumping
@@ -371,7 +415,7 @@ public class PlayerManager : MonoBehaviour
             Debug.Log("landing");
         }
     }
-    private void OnCollisionStay(Collision collision)
+    public void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Box")
         {
@@ -379,7 +423,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    void HandleSound()
+    public void HandleSound()
     {
         if (!isGround) return;
         footStepTimer -= Time.deltaTime;
@@ -394,7 +438,7 @@ public class PlayerManager : MonoBehaviour
             footStepTimer = baseStepSpeed * 0.6f;
         }
     }
-    void BhopDelayTimer() {
+    public void BhopDelayTimer() {
         bhopTimer -= Time.deltaTime;
         if (bhopTimer <= 0) {
             anim.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("FixBhopAnimation/bhop");//Set Bhop Animation 

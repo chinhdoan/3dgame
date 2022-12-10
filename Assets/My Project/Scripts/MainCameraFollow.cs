@@ -14,10 +14,6 @@ public class MainCameraFollow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-    }
-    private void FixedUpdate()
-    {
-        this.transform.rotation = Quaternion.Euler(camPos.eulerAngles.x, camPos.eulerAngles.y, 0);
+        transform.rotation = Quaternion.Euler(0, camPos.eulerAngles.y, 0);
     }
 }

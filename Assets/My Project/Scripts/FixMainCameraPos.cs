@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FixMainCameraPos : MonoBehaviour
 {
-    [SerializeField] Transform camRotationPos;
+    [SerializeField] Transform camPos;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,6 +14,6 @@ public class FixMainCameraPos : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = camRotationPos.position;
+        transform.position = camPos.position;
     }
 }
