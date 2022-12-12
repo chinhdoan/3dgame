@@ -8,18 +8,28 @@ public class CameraManager : MonoBehaviour
     private Animator anim;
     [SerializeField] Transform orientation, playerRotation, bodyRotation;
     [SerializeField] Vector3 offset;
+    public bool isActive;
 
 
     [Header("Movement")]
     float mouseX, mouseY, xRotation, yRotation;
-    [SerializeField] float senX,senY;
+    [SerializeField] public float senX,senY;
 
     [Header("ThirdPerson")]
     //[SerializeField] GameObject crosshair;
     [SerializeField] GameObject mainPlayer,handWeaponLocal;
+
+
+
+    public static CameraManager instance;
+
     // Start is called before the first frame update
     void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
         anim = GetComponent<Animator>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = true;
@@ -47,6 +57,7 @@ public class CameraManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))
         {
+            isActive = true;
             anim.SetBool("aimOrientation", true);
             //crosshair.SetActive(false);
             mainPlayer.SetActive(true);
@@ -54,10 +65,12 @@ public class CameraManager : MonoBehaviour
         }
         if (Input.GetMouseButtonUp(1))
         {
+            isActive = false;
             anim.SetBool("aimOrientation", false);
             //crosshair.SetActive(true);
             mainPlayer.SetActive(false);
             handWeaponLocal.SetActive(true);
+
 
 
 

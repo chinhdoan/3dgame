@@ -16,5 +16,13 @@ public class Crosshair : MonoBehaviour
     {
         transform.position = Input.mousePosition;
         transform.rotation = Quaternion.Euler(0,0,0); //Fix Crosshair Rotaion
+
+/*        if (CameraManager.instance.isActive == true) {
+            gameObject.SetActive(false);
+        }
+        if (CameraManager.instance.isActive == false)
+        {
+            gameObject.SetActive(true);
+        }*/
     }
 }
