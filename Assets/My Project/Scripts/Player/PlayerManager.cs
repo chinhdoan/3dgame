@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class PlayerManager : MonoBehaviour
 {
     [Header("Movement")]
     float wsInput, adInput, mouseX, mouseY;
     Vector3 moveDirection;
     public bool isMoving;
+
+
 
     [Header("GroundCheck")]
     [HideInInspector] public bool isGround = false;
@@ -50,10 +52,12 @@ public class PlayerManager : MonoBehaviour
     float bhopTimer = 1f;
     float baseBhopTime = 1f;
     float bunnyForce;
-    public bool isBhop;
 
     [Header("Finish")]
     [HideInInspector] public bool isFinished;
+ 
+
+
     GameManager gm = new GameManager();
 
     public static PlayerManager instance;
@@ -186,10 +190,6 @@ public class PlayerManager : MonoBehaviour
                 anim.SetBool("jumpBack", true);
                 BhopDelayTimer();
             }
-
-
-
-
         }
         //only press D
         if (adInput > 0 && wsInput == 0)
@@ -197,13 +197,11 @@ public class PlayerManager : MonoBehaviour
             SetAnimationDefault();
             anim.SetBool("runRight", true);
 
-
             if (!isGround)
             {
                 anim.SetBool("jumpRight", true);
                 BhopDelayTimer();
             }
-
         }
         //only press A
         if (adInput < 0 && wsInput == 0)
@@ -211,14 +209,11 @@ public class PlayerManager : MonoBehaviour
             SetAnimationDefault();
             anim.SetBool("runLeft", true);
 
-
             if (!isGround)
             {
                 anim.SetBool("jumpLeft", true);
                 BhopDelayTimer();
             }
-
-
         }
         //press WD
         if (wsInput > 0 && adInput > 0)
@@ -232,8 +227,6 @@ public class PlayerManager : MonoBehaviour
                 anim.SetBool("jumpStrafeRight", true);
                 BhopDelayTimer();
             }
-
-
         }
         //press WA
         if (wsInput > 0 && adInput < 0)
@@ -241,16 +234,11 @@ public class PlayerManager : MonoBehaviour
             SetAnimationDefault();
             anim.SetBool("strafeLeft", true);
 
-
-
             if (!isGround)
             {
                 anim.SetBool("jumpStrafeLeft", true);
                 BhopDelayTimer();
             }
-
-
-
         }
         //press SA
         if (wsInput < 0 && adInput < 0)
@@ -258,20 +246,17 @@ public class PlayerManager : MonoBehaviour
             SetAnimationDefault();
             anim.SetBool("strafeBackRight", true);
 
-
             if (!isGround)
             {
                 anim.SetBool("jumpStrafeBackRight", true);
                 BhopDelayTimer();
             }
-
         }
         //press SD
         if (wsInput < 0 && adInput > 0)
         {
             SetAnimationDefault();
             anim.SetBool("strafeBackLeft", true);
-
 
             if (!isGround)
             {
@@ -346,8 +331,6 @@ public class PlayerManager : MonoBehaviour
         if (wsInput == 0 && adInput == 0 || Input.GetKeyDown(KeyCode.Space)){
             forceTime = baseForceTimer;
         }
-
-       
         SpeedControl();
     }
 
@@ -399,9 +382,7 @@ public class PlayerManager : MonoBehaviour
         Physics.gravity = new Vector3(0f, -10f, 0f);
         //isJumping = true;
         Invoke("setJumping", 0.01f);
-        isGround = false;
-
-        
+        isGround = false;   
     }
     public void setJumping() {
         countJump++;
@@ -420,17 +401,14 @@ public class PlayerManager : MonoBehaviour
         }
         if (collision.gameObject.tag == "FinishLevel")
         {
+            isFinished = true;
             GameManager.instance.ActiveFinishPanel();
         }
-    }
-    public void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Box")
+        if (collision.gameObject.tag == "FinalStep")
         {
-            isBhop = false;
+            GameManager.instance.LoadNextMap();
         }
     }
-   
     public void HandleSound()
     {
         if (!isGround) return;

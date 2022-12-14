@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class MenuManager : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -18,5 +19,14 @@ public class MenuManager : MonoBehaviour
     void Update()
     {
         
+    }
+    public void StartGame()
+    {
+        SceneManager.LoadScene("Main");
+        AudioManager.instance.Stop("menuSound");
+    }
+    public void ExitGAme()
+    {
+        Application.Quit();
     }
 }

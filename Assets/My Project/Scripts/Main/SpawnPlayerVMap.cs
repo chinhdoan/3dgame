@@ -6,8 +6,6 @@ public class SpawnPlayerVMap : MonoBehaviour
 {
     [SerializeField] Transform mapSpawnPos;
     [SerializeField] Transform[] playerSpawnPos;
-    [SerializeField] Transform root;
-    [SerializeField] Transform parent;
     [SerializeField] GameObject[] map;
     [SerializeField] GameObject player;
     // Start is called before the first frame update
@@ -18,5 +16,4 @@ public class SpawnPlayerVMap : MonoBehaviour
         Instantiate(map[mapIndex], mapSpawnPos.position,Quaternion.identity);
         Instantiate(player, playerSpawnPos[mapIndex].position, Quaternion.identity);
     }
-
 }
