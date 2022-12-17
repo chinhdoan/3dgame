@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Back To Menu Screen
         if (Input.GetKeyDown(KeyCode.Escape)) {
             count += 1;
             if (backPanel.activeSelf == false) {
@@ -58,7 +59,6 @@ public class GameManager : MonoBehaviour
                 backPanel.SetActive(true);
                 isActive = true;
             }
-          
             if (count == 2)
             {
                 Cursor.lockState = CursorLockMode.Locked;
@@ -67,7 +67,6 @@ public class GameManager : MonoBehaviour
                 count = 0;
                 isActive = false;
             }
-
         }
         if (isActive == true) {
             if (Input.GetKeyDown(KeyCode.KeypadEnter)) {

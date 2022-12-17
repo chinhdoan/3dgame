@@ -29,8 +29,12 @@ public class GameLoading : MonoBehaviour
 
 
     [Header("My Weapon")]
-    [SerializeField] GameObject[] model;
-    [SerializeField] TMP_Text[] weaponNameTxt;
+    public Image gunBackground;
+    public Image knifeBackground;
+    public Sprite[] gunImg;
+    public Sprite[] knifeImg;
+    public TextMeshProUGUI gunName;
+    public TextMeshProUGUI knifeName;
 
     public static GameLoading instance;
     private void Awake()
@@ -38,12 +42,12 @@ public class GameLoading : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(this);
         }
         else if (instance != null) {
             Destroy(this);
         }
         setName();
+        setWeapon();
     }
     private void Start()
     {   
@@ -69,14 +73,18 @@ public class GameLoading : MonoBehaviour
             yourClan.text = clan;
         }
     }
-    void setWeapon() {
-       /* var rifeWeapon = PlayerPrefs.GetString("PlayerName");
-        var clan = PlayerPrefs.GetString("Clan");
-        if (playerName != null && clan != null)
+    public void setWeapon()
+    {
+        if (PlayerPrefs.HasKey("KnifeSelection") && PlayerPrefs.HasKey("GunSelection"))
         {
-            yourName.text = playerName;
-            yourClan.text = clan;
-        }*/
-
+            KnifeSelection.instance.myKnifeId = PlayerPrefs.GetInt("knifeSelection", 0);
+            GunSelection.instance.myGunId = PlayerPrefs.GetInt("gunSelection", 0);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("knifeSelection", 0);
+            PlayerPrefs.SetInt("gunSelection", 0);
+        }
     }
+
 }

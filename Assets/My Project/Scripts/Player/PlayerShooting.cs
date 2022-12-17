@@ -44,6 +44,8 @@ public class PlayerShooting : MonoBehaviour
     bool hasWeapon;
     public static PlayerShooting instance;
     GameObject tempWeapon;
+    private int gunID;
+    private int knifeID;
 
     // Start is called before the first frame update
     void Start()
@@ -51,6 +53,8 @@ public class PlayerShooting : MonoBehaviour
         if (instance == null) {
             instance = this;
         }
+        gunID = PlayerPrefs.GetInt("gunSelection", 0);
+        knifeID = PlayerPrefs.GetInt("knifeSelection", 0);
     }
 
     // Update is called once per frame
@@ -66,7 +70,7 @@ public class PlayerShooting : MonoBehaviour
         if (SaveSscript.WeaponID == 0) {
             if (!hasWeapon)
             {
-                tempWeapon = Instantiate(GameLoading.instance.myGun[2], playerHand);
+                tempWeapon = Instantiate(GameLoading.instance.myGun[gunID], playerHand);
                 hasWeapon = true;
             }
             if (Input.GetMouseButtonDown(0))
@@ -86,6 +90,12 @@ public class PlayerShooting : MonoBehaviour
                     delayTime = baseAKDeplayTime;
                 }
             }
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+
+                AudioManager.instance.PlayOnce("akClipOut");
+                StartCoroutine(delaySound());
+            }
         }
 
 
@@ -94,7 +104,7 @@ public class PlayerShooting : MonoBehaviour
         {
             if (!hasWeapon)
             {
-                tempWeapon = Instantiate(GameLoading.instance.myKnife[0], playerHand);
+                tempWeapon = Instantiate(GameLoading.instance.myKnife[knifeID], playerHand);
                 hasWeapon = true;
             }
         }
@@ -184,10 +194,13 @@ public class PlayerShooting : MonoBehaviour
             }
         }
     }
-    public void delWeapon ()
+    public void delWeapon()
     {
         Destroy(tempWeapon);
         hasWeapon = false;
     }
-   
+    IEnumerator delaySound() { 
+       yield return new WaitForSeconds( AudioManager.instance.clipLength);
+       AudioManager.instance.PlayOnce("akClipIn");
+    }
 }

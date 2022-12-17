@@ -27,13 +27,17 @@ public class KnifeAnimation : MonoBehaviour
         {
             anim.SetBool("slash", false);
         }
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
             anim.SetBool("slash", true);
+        }
+        if (Input.GetMouseButton(0)) {
+            anim.SetBool("combo", true);
         }
         if (Input.GetMouseButtonUp(0))
         {
             anim.SetBool("slash", false);
+            anim.SetBool("combo", false);
         }
         if (Input.GetMouseButtonDown(1))
         {
@@ -41,6 +45,13 @@ public class KnifeAnimation : MonoBehaviour
             anim.SetTrigger("bigshot");
 
         }
-       
+
+
+        //SwitchHand
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
+
     }
 }

@@ -6,7 +6,7 @@ public class AudioManager : MonoBehaviour
 {
 
 	public static AudioManager instance;
-
+	public float clipLength;
 	public Sound[] sounds;
 
 	void Awake()
@@ -41,6 +41,7 @@ public class AudioManager : MonoBehaviour
 	{
 		Sound s = Array.Find(sounds, item => item.name == sound);
 		s.source.Play();
+		clipLength = s.clip.length;
 
 
 	}

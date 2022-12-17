@@ -23,7 +23,6 @@ public class SaveSscript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             stopSound();
-            AudioManager.instance.Play("akClipIn");
             AudioManager.instance.Play("akClipOut");
             isKnife = false;
             PlayerShooting.instance.delWeapon();
@@ -48,7 +47,6 @@ public class SaveSscript : MonoBehaviour
             //Switch
             if (isKnife == true)
             {
-                AudioManager.instance.Play("akClipIn");
                 AudioManager.instance.Play("akClipOut");
                 Debug.Log("Gun");
                 WeaponID = 0;
@@ -70,7 +68,6 @@ public class SaveSscript : MonoBehaviour
     void stopSound()
     {
         AudioManager.instance.Stop("knifeSwitchSound");
-        AudioManager.instance.Stop("akClipIn");
         AudioManager.instance.Stop("akClipOut");
     }
 }

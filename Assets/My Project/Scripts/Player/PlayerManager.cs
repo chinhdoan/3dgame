@@ -80,6 +80,7 @@ public class PlayerManager : MonoBehaviour
         rb.freezeRotation = true;
         gravity = -1100f;
         Physics.gravity = new Vector3(0f, gravity, 0f);
+        //rb.angularDrag = 10000f;
     }
     private void Update()
     {
@@ -89,13 +90,14 @@ public class PlayerManager : MonoBehaviour
         if (isGround)
         {
             rb.drag = groundDrag;
-
+           
             //FixBhopAnimation
             anim.enabled = true;
         }
         else
         {
             rb.drag = 1;
+            //Physics.gravity = new Vector3(0, -600f, 0);
         }
        
        
@@ -313,6 +315,7 @@ public class PlayerManager : MonoBehaviour
 
         else if (!isGround)
         {
+           
             if (wsInput < 0)
             {
                 airForceSpeed = 15f;
