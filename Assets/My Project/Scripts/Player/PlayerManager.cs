@@ -119,12 +119,11 @@ public class PlayerManager : MonoBehaviour
         if (!isGround) {
             MovePlayer(5f);
             rb.angularDrag = 9999f;
-            forceSpeed = 1f;
+            forceSpeed = 5f;
         }
         if (isGround) {
             MovePlayer(70f);
             jumpForce = 200f;
-            forceSpeed = 70f;
             airForceSpeed = 1f;
         }
         if (adInput == 0 && wsInput == 0 ) {
@@ -335,6 +334,7 @@ public class PlayerManager : MonoBehaviour
             if (wsInput > 0 || wsInput < 0 || adInput > 0 || adInput < 0)
             {
                 Physics.gravity = new Vector3(0f, -1190f, 0f); //Gravity vs JumpFar/  airforce
+                forceSpeed = 60f;
                 isMoving = true;
             }
             else {
