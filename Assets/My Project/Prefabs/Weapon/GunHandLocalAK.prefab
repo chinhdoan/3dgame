@@ -501,6 +501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 3917174057264204280}
+  reloadClip: {fileID: 7400000, guid: ad4b3b6c8fe53e94a94a24ef6f68f851, type: 2}
   isReloading: 0
 --- !u!1 &3917174057254697530
 GameObject:

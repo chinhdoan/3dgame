@@ -17,6 +17,9 @@ TagManager:
   - Sand
   - Step
   - WorldCamera
+  - DeathZone
+  - demon
+  - knife
   layers:
   - Default
   - TransparentFX
@@ -34,7 +37,7 @@ TagManager:
   - Effect
   - Gun
   - Obstacle
-  - 
+  - DeathZone
   - 
   - 
   - 

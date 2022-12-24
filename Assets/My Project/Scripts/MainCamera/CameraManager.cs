@@ -16,9 +16,8 @@ public class CameraManager : MonoBehaviour
     [SerializeField] public float senX,senY;
 
     [Header("ThirdPerson")]
-    //[SerializeField] GameObject crosshair;
     [SerializeField] GameObject mainPlayer;
-    [SerializeField] GameObject[] handWeaponLocal;
+    [SerializeField] GameObject handLocalPlayer;
 
     public static CameraManager instance;
 
@@ -48,28 +47,12 @@ public class CameraManager : MonoBehaviour
 
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-
+        
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         bodyRotation.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         playerRotation.rotation = Quaternion.Euler(0, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
 
-       /* if (Input.GetMouseButtonDown(1))
-        {
-            isActive = true;
-            anim.SetBool("aimOrientation", true);
-            //crosshair.SetActive(false);
-            mainPlayer.SetActive(true);
-            handWeaponLocal[SaveSscript.WeaponID].SetActive(false);
-        }*/
-       /* if (Input.GetMouseButtonUp(1))
-        {
-            isActive = false;
-            anim.SetBool("aimOrientation", false);
-            //crosshair.SetActive(true);
-            mainPlayer.SetActive(false);
-            handWeaponLocal[SaveSscript.WeaponID].SetActive(true);
-        }*/
     }
     private void FixedUpdate()
     {

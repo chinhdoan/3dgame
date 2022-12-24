@@ -8,60 +8,48 @@ public class KnifeSelection : MonoBehaviour
     [HideInInspector]
     public int myKnifeId;
 
-
-
-    public static KnifeSelection instance;
     private void Awake()
     {
-        if (PlayerPrefs.HasKey("KnifeSelection"))
-        {
-            myKnifeId = PlayerPrefs.GetInt("knifeSelection", 0);
-            GameLoading.instance.knifeBackground.sprite = GameLoading.instance.knifeImg[myKnifeId];
-            GameLoading.instance.knifeName.text = GameLoading.instance.knifeImg[myKnifeId].name;
-        }
-        else
-        {
-            PlayerPrefs.SetInt("knifeSelection", 0);
-            GameLoading.instance.knifeBackground.sprite = GameLoading.instance.knifeImg[0];
-            GameLoading.instance.knifeName.text = GameLoading.instance.knifeImg[0].name;
-        }
+        myKnifeId = PlayerPrefs.GetInt("knifeSelection");
+        GameLoading.instance.knifeBackground.sprite = GameLoading.instance.knifeImg[myKnifeId];
+        GameLoading.instance.knifeName.text = GameLoading.instance.knifeImg[myKnifeId].name;
+    }
+    private void Start()
+    {
     }
 
-    public void Start()
+    private void Update()
     {
-        if (instance == null) {
-            instance = this;
-         
-        }
+       
     }
     public void nextSelection()
     {
-        GameLoading.instance.knifeBackground.sprite = null;
         myKnifeId++;
         Debug.Log(myKnifeId);
         if (myKnifeId >= GameLoading.instance.knifeImg.Length)
         {
             myKnifeId = 0;
-            setgunIndex();
+            PlayerPrefs.SetInt("knifeSelection", 0);
         }
-        setgunIndex();
+        setKnifeIndex();
     }
     public void prevSelection()
     {
         GameLoading.instance.knifeBackground.sprite = null;
         Debug.Log(myKnifeId);
-        if (myKnifeId >= 1)
+        if (myKnifeId > 1)
         {
-            myKnifeId--;
+           myKnifeId--;
         }
         if (myKnifeId <= -1)
         {
             GameLoading.instance.knifeBackground.sprite = GameLoading.instance.knifeImg[myKnifeId];
         }
-        setgunIndex();
+        setKnifeIndex();
     }
-    void setgunIndex()
+    void setKnifeIndex()
     {
+        PlayerPrefs.SetInt("knifeSelection", myKnifeId);
         GameLoading.instance.knifeBackground.sprite = GameLoading.instance.knifeImg[myKnifeId];
         GameLoading.instance.knifeName.text = GameLoading.instance.knifeImg[myKnifeId].name;
     }

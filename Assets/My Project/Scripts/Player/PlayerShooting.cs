@@ -5,14 +5,21 @@ using UnityEngine;
 
 public class PlayerShooting : MonoBehaviour
 {
+    [Header("Damage")]
+    public int knifeDamage = 50;
+
     [Header("GunBullet")]
+    public int countBullet;
     [SerializeField] Transform muzzleSpawn, playerMuzzleSpawn;
     [SerializeField] Transform bulletSpawn, playerBulletSpawn;
     [SerializeField] GameObject gunFlash;
     [SerializeField] GameObject impactWall;
     [SerializeField] GameObject gunBullet;
+    int tempCount;
 
-
+    [Header("Reload")]
+    [SerializeField] AnimationClip reloadAnim;
+    bool isReloading;
 
 
     public float bulletSpeed = 500f;
@@ -29,7 +36,9 @@ public class PlayerShooting : MonoBehaviour
     [Header("Shooting")]
     float delayTime = 0.5f;
     float baseAKDeplayTime = 0.1f;
-    public bool isShooting; 
+    public bool isShooting;
+    [SerializeField] float gunDamage;
+    [SerializeField] GameObject bloodImpact;
 
     [Header("Spray")]
     public GameObject sprayImg;
@@ -53,8 +62,8 @@ public class PlayerShooting : MonoBehaviour
         if (instance == null) {
             instance = this;
         }
-        gunID = PlayerPrefs.GetInt("gunSelection", 0);
-        knifeID = PlayerPrefs.GetInt("knifeSelection", 0);
+        gunID = PlayerPrefs.GetInt("gunSelection");
+        knifeID = PlayerPrefs.GetInt("knifeSelection");
     }
 
     // Update is called once per frame
@@ -64,50 +73,69 @@ public class PlayerShooting : MonoBehaviour
         direction = Vector3.forward;
         Debug.DrawRay(transform.position, transform.TransformDirection(direction * range));
         spray();
-
-
         //Gun SLot
-        if (SaveSscript.WeaponID == 0) {
+        if (SaveSscript.WeaponID == 0) 
+        {
+            //only One
             if (!hasWeapon)
             {
                 tempWeapon = Instantiate(GameLoading.instance.myGun[gunID], playerHand);
                 hasWeapon = true;
             }
-            if (Input.GetMouseButtonDown(0))
-            {
-                shoot();
-                AudioManager.instance.Play("gunShootSound");
-                delayTime = 0.25f;
-            }
-            if (Input.GetMouseButton(0))
-            {
-                delayTime -= Time.deltaTime;
-                Debug.Log(delayTime);
-                if (delayTime <= 0)
-                {
-                    shoot();
-                    AudioManager.instance.PlayOnce("gunShootSound");
-                    delayTime = baseAKDeplayTime;
-                }
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
 
-                AudioManager.instance.PlayOnce("akClipOut");
-                StartCoroutine(delaySound());
+            if (SaveSscript.currentAmmor > 0) {
+                //Shoot
+                if (Input.GetMouseButtonDown(0))
+                { 
+                    shoot();
+                    AudioManager.instance.Play("gunShootSound");
+                    delayTime = 0.25f;
+                }
+                if (Input.GetMouseButton(0))
+                {
+                    delayTime -= Time.deltaTime;
+                    Debug.Log(delayTime);
+                    if (delayTime <= 0)
+                    {
+                        shoot();
+                        AudioManager.instance.PlayOnce("gunShootSound");
+                        delayTime = baseAKDeplayTime;
+                    }
+                }          
+            }
+
+            if (SaveSscript.currentAmmor <= 0 && Input.GetMouseButtonUp(0)) {
+                StartCoroutine(reloadAmmor());
+            }
+
+            //Reload Bullet
+            if (Input.GetKeyDown(KeyCode.R) && SaveSscript.currentAmmor < 30)
+            {
+                StartCoroutine(reloadAmmor());
             }
         }
 
 
         //Knife SLot
         if (SaveSscript.WeaponID == 1)
-        {
+        { 
+            //only One
             if (!hasWeapon)
             {
                 tempWeapon = Instantiate(GameLoading.instance.myKnife[knifeID], playerHand);
                 hasWeapon = true;
             }
+           
         }
+        {
+            //only One
+            if (!hasWeapon)
+            {
+                tempWeapon = Instantiate(GameLoading.instance.myKnife[knifeID], playerHand);
+                hasWeapon = true;
+            }
+
+        }  
     }
     void spray() {
         if (Input.GetKeyDown(KeyCode.F)) {
@@ -122,6 +150,7 @@ public class PlayerShooting : MonoBehaviour
 
     void shoot()
     {
+        SaveSscript.currentAmmor--;
         ImpactEffect(1000f);
         //Instantiate(gunFlash, muzzleSpawn.position, muzzleSpawn.rotation);
         GameObject bullet = Instantiate(gunBullet, bulletSpawn.position, bulletSpawn.rotation);
@@ -140,6 +169,18 @@ public class PlayerShooting : MonoBehaviour
         Ray theRay = new Ray(transform.position, transform.TransformDirection(direction * range));
         if (Physics.Raycast(theRay, out hit, range))
         {
+            //Kill demon
+            Target target = hit.transform.GetComponent<Target>();
+            if (target != null) {
+                target.TakeDamage(gunDamage);
+                isReloading = false;
+                Instantiate(bloodImpact, hit.point, Quaternion.LookRotation(hit.normal));
+            }
+           
+        
+
+
+             //Spray
             switch (range)
             {
                 case (500f):
@@ -199,8 +240,15 @@ public class PlayerShooting : MonoBehaviour
         Destroy(tempWeapon);
         hasWeapon = false;
     }
-    IEnumerator delaySound() { 
-       yield return new WaitForSeconds( AudioManager.instance.clipLength);
-       AudioManager.instance.PlayOnce("akClipIn");
+    IEnumerator reloadAmmor()
+    {
+        if (isReloading == false)
+        {
+            AudioManager.instance.PlayOnce("akClipIn");
+            yield return new WaitForSeconds(AudioManager.instance.clipLength);
+            AudioManager.instance.PlayOnce("akReloadSound");
+            SaveSscript.currentAmmor = 30;
+            isReloading = true;
+        }
     }
 }

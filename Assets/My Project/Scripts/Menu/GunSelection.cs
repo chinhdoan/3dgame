@@ -9,32 +9,14 @@ public class GunSelection : MonoBehaviour
     [HideInInspector]
     public int myGunId;
 
-    public static GunSelection instance;
-
     private void Awake()
     {
-        if (PlayerPrefs.HasKey("gunSelection"))
-        {
-            myGunId = PlayerPrefs.GetInt("gunSelection", 0);
-            GameLoading.instance.gunBackground.sprite = GameLoading.instance.gunImg[myGunId];
-            GameLoading.instance.gunName.text = GameLoading.instance.gunImg[myGunId].name;
-
-        }
-        else
-        {
-            PlayerPrefs.SetInt("gunSelection", 0);
-            GameLoading.instance.gunBackground.sprite = GameLoading.instance.gunImg[0];
-            GameLoading.instance.gunName.text = GameLoading.instance.gunImg[0].name;
-        }
+        myGunId = PlayerPrefs.GetInt("gunSelection");
+        GameLoading.instance.gunBackground.sprite = GameLoading.instance.gunImg[myGunId];
+        GameLoading.instance.gunName.text = GameLoading.instance.gunImg[myGunId].name;
     }
-
-    public void Start()
+    private void Start()
     {
-        if (instance == null)
-        {
-            instance = this;
-           
-        }
     }
     public void nextSelection()
     {
@@ -43,13 +25,12 @@ public class GunSelection : MonoBehaviour
         if (myGunId >= GameLoading.instance.gunImg.Length)
         {
             myGunId = 0;
-            setgunIndex();
-        }
+            PlayerPrefs.SetInt("gunSelection", 0);
+        } 
         setgunIndex();
     }
     public void prevSelection()
     {
-
         Debug.Log(myGunId);
         if (myGunId >= 1)
         {
@@ -63,6 +44,7 @@ public class GunSelection : MonoBehaviour
     }
     void setgunIndex()
     {
+        PlayerPrefs.SetInt("gunSelection", myGunId);
         GameLoading.instance.gunBackground.sprite = GameLoading.instance.gunImg[myGunId];
         GameLoading.instance.gunName.text = GameLoading.instance.gunImg[myGunId].name;
     }

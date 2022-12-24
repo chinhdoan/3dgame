@@ -857,6 +857,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9578ba7c78508ce4f8c6046f168eda35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  knifeDamage: 50
+  countBullet: 0
   muzzleSpawn: {fileID: 2367938914319095579}
   playerMuzzleSpawn: {fileID: 0}
   bulletSpawn: {fileID: 4886222655894925174}
@@ -867,16 +870,21 @@ MonoBehaviour:
     type: 3}
   gunBullet: {fileID: 1448796309927650492, guid: 51b43a7b1ce5ce94eb208cc7fb9b808c,
     type: 3}
+  reloadAnim: {fileID: 0}
   bulletSpeed: 500
   cam: {fileID: 4691853530565217341}
   impactEffect: {fileID: 1943984096447697243, guid: b7315060fd12c664083c419ecf0a24f8,
     type: 3}
   bulletEffect: {fileID: 130485859033054298, guid: e805b8b4b1850024592b3fc4347d92dd,
     type: 3}
+  isShooting: 0
+  gunDamage: 0
+  bloodImpact: {fileID: 0}
   sprayImg: {fileID: 3090307504878417929, guid: 779af4ba169436349b26b08fb9752582,
     type: 3}
   camRotaion: {fileID: 8658392128811756429}
   orientation: {fileID: 0}
+  playerHand: {fileID: 0}
 --- !u!1 &4294749208745712015
 GameObject:
   m_ObjectHideFlags: 0
@@ -1847,7 +1855,7 @@ MonoBehaviour:
   senX: 0.005
   senY: 0.002
   mainPlayer: {fileID: 0}
-  handWeaponLocal: {fileID: 4635689113509564061}
+  handLocalPlayer: {fileID: 3928470131417121850}
 --- !u!95 &2284807958914746844
 Animator:
   serializedVersion: 4

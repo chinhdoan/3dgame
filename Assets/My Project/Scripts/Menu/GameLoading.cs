@@ -47,7 +47,7 @@ public class GameLoading : MonoBehaviour
             Destroy(this);
         }
         setName();
-        setWeapon();
+
     }
     private void Start()
     {   
@@ -73,18 +73,4 @@ public class GameLoading : MonoBehaviour
             yourClan.text = clan;
         }
     }
-    public void setWeapon()
-    {
-        if (PlayerPrefs.HasKey("KnifeSelection") && PlayerPrefs.HasKey("GunSelection"))
-        {
-            KnifeSelection.instance.myKnifeId = PlayerPrefs.GetInt("knifeSelection", 0);
-            GunSelection.instance.myGunId = PlayerPrefs.GetInt("gunSelection", 0);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("knifeSelection", 0);
-            PlayerPrefs.SetInt("gunSelection", 0);
-        }
-    }
-
 }

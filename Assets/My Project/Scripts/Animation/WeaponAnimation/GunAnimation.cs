@@ -6,7 +6,7 @@ using System.Threading;
 public class GunAnimation : MonoBehaviour
 {
     public Animator anim;
-
+    public AnimationClip reloadClip;
     public bool isReloading;
     private void Awake()
     {
@@ -41,8 +41,10 @@ public class GunAnimation : MonoBehaviour
         {
             anim.SetTrigger("reload");
         }
-      
-
+        if (SaveSscript.currentAmmor <= 0 && Input.GetMouseButtonUp(0))
+        {
+            anim.SetTrigger("reload");
+        }
         //SwitchHand
         if (Input.GetKeyDown(KeyCode.Tab))
         {

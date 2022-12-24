@@ -10,9 +10,10 @@ using System.Threading;
 public class GameManager : MonoBehaviour
 {
 
-    public GameObject finishPanel;
+    public GameObject finishPanel, losePanel;
     public GameObject map, oldMap;
     public Transform mapSpawn;
+    public Transform[] nextStepSpawn;
     DestroyCurrentMap delCurentMap = new DestroyCurrentMap();
 
     public Animator anim;
@@ -26,6 +27,8 @@ public class GameManager : MonoBehaviour
     bool isActive;
     int count;
 
+    [SerializeField] GameObject killMarkPanel;
+    [SerializeField] GameObject crosshair;
 
     public static GameManager instance;
     // Start is called before the first frame update
@@ -40,6 +43,7 @@ public class GameManager : MonoBehaviour
             instance = this;
         }
 
+        //Load to Menu Screen after Win
         WinAnimationClip.AddEvent(new AnimationEvent()
         {
             time = WinAnimationClip.length,
@@ -73,11 +77,15 @@ public class GameManager : MonoBehaviour
                 SceneManager.LoadScene("Menu");
             }
         }
-
+        if (losePanel.activeSelf == true) {
+            if (Input.GetKeyDown(KeyCode.KeypadEnter))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+        }
     }
     public void ActiveFinishPanel() {
         if (finishPanel != null ) {
-            Debug.Log("Hello");
             finishPanel.SetActive(true);
             Time.timeScale = 0.1f;
             CameraManager.instance.senX = 0.00001f;
@@ -105,5 +113,31 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene("Menu");
         }
+    }
+    public void Exit()
+    {
+        {
+            Application.Quit();
+        }
+    }
+    public void setActiveLosePanel() {
+        losePanel.SetActive(true);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        //Deactive escape
+        count = 1;
+    }
+    public void showKillMark() {
+
+        killMarkPanel.SetActive(true);
+        StartCoroutine(cancelKillMark());
+    }
+
+   
+    IEnumerator cancelKillMark()
+    {
+        yield return new WaitForSeconds(0.5f);
+        killMarkPanel.SetActive(false);
     }
 }
