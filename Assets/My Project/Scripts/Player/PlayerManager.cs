@@ -162,7 +162,7 @@ public class PlayerManager : MonoBehaviour
         //SetBhopJumpForce
         if (Input.GetKey(KeyCode.Space) && isGround && isJumping == false && isBhop == true)
         {
-            bunnyForce = 220f;
+            bunnyForce = 230f;
             airForceSpeed = 450f;
             Jump(bunnyForce);
         }
